@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.7
+#
+# WOGC test image: reproducible container that runs the unit_tests/ and
+# API_tests/ suites without relying on any host toolchain.
+#
+# Build: docker-compose.test.yml uses this Dockerfile.
+# Run   : `SUITE=all|unit|api` is read at container start.
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies via the locked manifest. This happens inside the
+# container; the host never runs `npm`.
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+# Copy the rest of the project (config, src, tests, suites).
+COPY . .
+
+# Default suite is everything; compose overrides via SUITE env.
+ENV SUITE=all
+CMD ["sh", "-c", "case \"$SUITE\" in unit) npx vitest run unit_tests ;; api) npx vitest run API_tests ;; *) npx vitest run && echo RESULT: PASS ;; esac"]

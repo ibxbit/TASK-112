@@ -1,0 +1,11 @@
+services:
+  wogc-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: wogc-tests:local
+    container_name: wogc-tests
+    environment:
+      SUITE: ${SUITE:-all}
+    # No ports — pure CI container.
+    restart: "no"

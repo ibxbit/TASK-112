@@ -1,0 +1,16 @@
+services:
+  wogc-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wogc-frontend:local
+    container_name: wogc-frontend
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    restart: unless-stopped

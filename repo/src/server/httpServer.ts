@@ -337,7 +337,7 @@ export const createServer = (): Promise<ServerHandle> => {
     }),
   ];
 
-  const server = http.createServer(async (req, res) => {
+  const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const urlObj = new URL(req.url ?? "/", "http://localhost");
     const token = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "") || null;
     const session = store.get(token);
@@ -413,8 +413,8 @@ export const createServer = (): Promise<ServerHandle> => {
         port: addr.port,
         store,
         close: () =>
-          new Promise((closeResolve, closeReject) => {
-            server.close((err) => (err ? closeReject(err) : closeResolve()));
+          new Promise<void>((closeResolve, closeReject) => {
+            server.close((err?: Error) => (err ? closeReject(err) : closeResolve()));
           }),
       });
     });

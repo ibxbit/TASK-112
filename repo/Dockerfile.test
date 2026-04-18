@@ -1,12 +1,10 @@
-# syntax=docker/dockerfile:1.7
-#
 # WOGC test image: reproducible container that runs the unit_tests/ and
 # API_tests/ suites without relying on any host toolchain.
 #
 # Build: docker-compose.test.yml uses this Dockerfile.
 # Run   : `SUITE=all|unit|api` is read at container start.
 
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
